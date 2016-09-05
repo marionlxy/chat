@@ -7,6 +7,8 @@ public class Menu {
 
     private String menuCode;
 
+    private String menuType;
+
     private String pmenuCode;
 
     private String status;
@@ -41,6 +43,14 @@ public class Menu {
 
     public void setMenuCode(String menuCode) {
         this.menuCode = menuCode == null ? null : menuCode.trim();
+    }
+
+    public String getMenuType() {
+        return menuType;
+    }
+
+    public void setMenuType(String menuType) {
+        this.menuType = menuType == null ? null : menuType.trim();
     }
 
     public String getPmenuCode() {
