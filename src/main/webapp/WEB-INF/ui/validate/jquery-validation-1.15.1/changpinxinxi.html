@@ -1,0 +1,4376 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+<!--
+	var log4javascript_disabled = true;
+//-->
+</script>
+<script type="text/javascript"
+	src="/slsint/scripts/log4javascript.js"></script>
+<script type="text/javascript">
+	var logger = log4javascript.getLogger();
+	var popUpAppender = new log4javascript.PopUpAppender();
+	var popUpLayout = new log4javascript.PatternLayout("%d{HH:mm:ss} %-5p - %m%n");
+	popUpAppender.setLayout(popUpLayout);
+	logger.addAppender(popUpAppender);
+	logger.debug("logger init.......");
+	var gl_hostPrefix = 'http://localhost:48080';
+	var gl_systemName = 'slsint';
+	var url_organTree = gl_hostPrefix+'/'+gl_systemName+'/treeAction.do?method=getOrganTreeXML&treeId=';
+	
+</script>
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<title>广州农商行外汇数据报送系统</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="/slsint/styles/default.css" />
+<link rel="stylesheet" type="text/css" media="all"
+	href="/slsint/styles/common.css" />
+<link rel="stylesheet" href="/slsint/images/css.css" type="text/css" />
+<style id="tipsstyle">
+#tips {
+	position: absolute;
+	z-index: 200;
+	width: 150;
+	height: 60;
+	background-color: #d2e8ff;
+	border: 1 solid black;
+};
+
+</style>
+<style type="text/css">
+.oddopt {
+	background: #DEDEDE;
+};
+
+div:hover {
+	background: blue;
+};
+
+.evenopt {
+	background: white;
+};
+</style>
+
+
+
+
+
+
+<script src="scripts/jquery-1.7.2.js" type="text/javascript"></script>
+<script type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
+
+
+<script type="text/javascript" src="common/jqueryValidata_ns/movePoint.js"></script>
+
+ <script type="text/javascript" src="common/jqueryValidata_ns/validator_4102.js" charset="UTF-8"></script>
+<script type="text/javascript">
+//  the hook for add new row
+	$(function(){
+		$("[input[id$='inputc']").live({focus:function(){
+			var width = this.scrollWidth;
+			var nameStr = $(this).attr("name");
+			var idStr = $(this).attr("id");
+			this.onpropertychange = function(){
+			autoSet(nameStr,width,idStr);
+			};
+			if (window.addEventListener) {
+				this.addEventListener('input', function() {autoSet(nameStr,width,idStr);}, false); 
+			} 
+			autoSetAll(nameStr,width,idStr);
+		},blur:function(){
+			//for future
+			// setTimeout('$("#"'+$(this).attr("id")+').hide()',1000); 
+		}
+		});
+	});
+	
+ 	function hiden(name){
+ 		$("#"+name+"dicDiv").hide();
+ 	}
+	function autoSet(name,width, idStr){
+		$("div[id$=dicDiv]").html(divContent).hide(); 
+		var content = document.getElementById(idStr).value;
+		var divContent = "";
+		var curAry = eval('ss'+name);
+		var styleFlag = false;
+		var class1;
+		for(var i=0; i<curAry.length; i++){
+			if(curAry[i].V.indexOf(content)>-1){
+				if(styleFlag){
+					styleFlag = false;
+					class1 = 'evenopt';
+				}else{
+					styleFlag = true;
+					class1 = 'oddopt'; 
+				}
+				divContent+='<div class="'+class1+'" style="width:'+width+'px;height:20px;text-align:left;padding-left:5px;padding-top:4px;" id="'+curAry[i].K+'" onClick=keySet("'+curAry[i].K+'","'+curAry[i].V+'","'+idStr+'")>'+curAry[i].V+'</div>';
+			}
+		}
+		$("#"+idStr.substr(0,idStr.length-6)+"dicDiv").html(divContent).show();
+	}
+	
+	function autoSetAll(name,width, idStr){
+		var curAry = eval('ss'+name);
+		var divContent = "";
+		var styleFlag = false;
+		var class1;
+		for(var i=0; i<curAry.length; i++){
+			if(styleFlag){
+				styleFlag = false;
+				class1 = 'evenopt';
+			}else{
+				styleFlag = true;
+				class1 = 'oddopt';
+			}
+			divContent+='<div class="'+class1+'" style="width:'+width+'px;height:20px;text-align:left;padding-left:5px;padding-top:4px;" id="'+curAry[i].K+'" onClick=keySet("'+curAry[i].K+'","'+curAry[i].V+'","'+idStr+'")>'+curAry[i].V+'</div>';
+		}
+		$("#"+idStr.substr(0,idStr.length-6)+"dicDiv").html(divContent).show(); 
+	}
+
+	function keySet(K,V,id){
+		
+		if (document.getElementById(id.substr(0,id.length-1)+"c")!=null&&document.getElementById(id.substr(0,id.length-1)+"c")!=''){
+			document.getElementById(id.substr(0,id.length-1)+"c").value=V;
+		}
+		if (document.getElementById(id.substr(0,id.length-1)+"v")!=null&&document.getElementById(id.substr(0,id.length-1)+"c")!=''){
+			document.getElementById(id.substr(0,id.length-1)+"v").value=K;
+		}
+		$("#"+id.substr(0,id.length-6)+"dicDiv").hide(); 
+	}  
+</script>
+
+
+<script language="javascript">
+
+			var   cols=0;
+			var   nextDataSortNum = 2;
+			var   obj;
+			var   CanMove=false;
+			var   key;
+			var req;
+			var delItems = "";
+			cols = cols + 1;
+			
+		</script>
+
+<script type="text/javascript">
+function checkNullForItem2(objId){
+	if (objId!=null&&objId!=''){
+		var objValue ;
+		if (document.getElementById(objId)!=null){
+			objValue = document.getElementById(objId).value;
+		}
+		var str=/^\s+$/gi;
+		if (!objValue ||objValue==''|| objValue.length==0 ||objValue=='DZ' || objValue=='NA' || str.test(objValue) ){
+			return false;
+		}
+		return true;
+	}
+	return true;
+	
+}
+
+function checkNull(objId){
+	if (objId!=null&&objId!=''){
+		var objValue ;
+		if (document.getElementById(objId)!=null){
+			objValue = document.getElementById(objId).value;
+		}
+		var str=/^\s+$/gi;
+		if (!objValue ||objValue==''|| objValue.length==0 ||objValue=='DZ'||objValue=='N/A'||objValue=='NA' || str.test(objValue) ){
+			return false;
+		}
+		return true;
+	}
+	return true;
+	
+}
+
+</script>
+
+
+<script type="text/javascript">
+			
+
+
+	         function delrow(obj, itemID)
+	        {
+	        	var reportDate=document.getElementById("dataDate").value;
+	        	var reportId=4102;
+	            var budgetTbl = document.all("budgetTbl");
+	            if(budgetTbl.rows.length == 1)
+	            {
+	                alert("至少要保留一行！");
+	            }
+	            else
+	            {
+					if(confirm("确实要删除选中的数据吗？")){
+	                if (itemID != null){
+	                	delItems += itemID + ",";
+	                }else{
+	                	deleteRow(budgetTbl,obj.parentElement.parentElement.parentElement.rowIndex);
+	                }
+	                if (itemID!=undefined){
+	                	 var iWidth=400; 
+	    			     var iHeight=300; 
+	    			     var iTop = (window.screen.availHeight-30-iHeight)/2;
+	    			     var iLeft = (window.screen.availWidth-10-iWidth)/2;
+	    			     $(document).ready(function(){
+	    					$.ajax({
+	    						type : "post",
+	    						url: "reportView.do?method=delRepdataAjax", 
+	    						data: {pkid:itemID,reportDate:reportDate,reportId:reportId},
+	    						dataType : "json",
+	    						success :function(result){
+	    							if (result!=null){
+	    								   window.open ('/slsint/studentloan/deleteRepData.jsp?&pkid='+itemID+"&reportId="+reportId+"&reportDate="+reportDate, 'newwindow', 'height='+iHeight+',innerHeight='+iHeight+', width='+iWidth+',innerWidth='+iWidth+', top='+iTop+',left='+iLeft+', toolbar=no, menubar=no, scrollbars=yes,resizable=no,location=no, status=no'); 
+	    								  deleteRow(budgetTbl,obj.parentElement.parentElement.parentElement.rowIndex);
+	    							 }else{
+	    								 deleteRow(budgetTbl,obj.parentElement.parentElement.parentElement.rowIndex);
+	    							 }
+	    							
+	    						},
+	    						 error :function(result){
+	    							 alert("删除失败");
+	    						} 
+	    					});
+	    				});
+	                }else{
+	                	nextDataSortNum = nextDataSortNum-1;
+	                }
+	                
+					}else{
+						return null;
+					}
+	            }
+	        }; 
+	        function repDateReplay(obj,pkid, itemID)
+	        {
+	        	var reportDate=document.getElementById("dataDate").value;
+	        	var reportId=4102;
+	        	var url = "reportView.do?method=replayAllData&pkid="+pkid+"&itemID="+itemID+"&reportDate="+reportDate+"&reportId="+reportId;
+				window.location.href = url;
+	        }
+	        
+	        function addrow(){
+		        	var budgetTbl = document.all("budgetTbl");
+		            insertRow(budgetTbl,budgetModel);
+		            nextDataSortNum = nextDataSortNum + 1;
+		            var name=document.getElementsByName("queding");
+		        		name[1].disabled='';
+	        }
+	        
+	                	
+	        function insertRow(opTbl,modelTbl,index)
+	        {
+	            var rowObj;
+	            var rowAlign;
+	            var cellHtml;
+	            var cellClass;
+	            var cellAlign;
+	            var cellVAlign;
+	            var cellHeight;
+	            var cellWidth;
+	            var cellNoWarp;
+	            var cellObj;
+	            var cellColspan;
+	            var cellId;
+	            if(opTbl==null)	return;
+	            for(var i=0;modelTbl!=null && i<modelTbl.rows.length;i++)
+	            {
+	                if(index!=null && index>=0) 
+	                {
+	                    rowObj=opTbl.insertRow(index);
+	                }
+	                else  
+	                {
+	                    rowObj=opTbl.insertRow();
+	                }
+	                rowObj.className=modelTbl.rows[i].className;
+	                rowObj.align=modelTbl.rows[i].align;
+	                for(var j=0;modelTbl.rows[i].cells!=null && j<modelTbl.rows[i].cells.length;j++)
+	                {
+	                    cellHtml=modelTbl.rows[i].cells[j].innerHTML;
+	                    if(j==0){
+	                    	/* cellHtml="<a href='#'><img border='0' src='/slsint/images/datadel.gif' width='16' height='16' onclick='delrow(this)'></a>"; */
+	                    	cellHtml="" + nextDataSortNum + "<input type=\"hidden\" name=\"dataSort\" value=\"" + nextDataSortNum+ "\">";
+	                   /*  } else if(j==1){ */
+	                    	/* cellHtml="" + nextDataSortNum + "<input type=\"hidden\" name=\"dataSort\" value=\"" + nextDataSortNum+ "\">"; */
+						}else{
+							var rgExp1=/id=1_/g;
+							var rgExpId="id="+nextDataSortNum+"_";
+	                    	cellHtml = cellHtml.replace(rgExp1, rgExpId);
+							var rgExp2=/name=1_/g;
+							var rgExpName="name="+nextDataSortNum+"_";
+	                    	cellHtml = cellHtml.replace(rgExp2, rgExpName);
+							var rgExp3=/tips\(\'1_/g;
+							var rgExpTip="tips('"+nextDataSortNum+"_";
+	                    	cellHtml = cellHtml.replace(rgExp3, rgExpTip);
+	                    }
+	                    cellClass="TdBGColor_ex";
+	                    cellAlign=modelTbl.rows[i].cells[j].align;
+	                    cellVAlign=modelTbl.rows[i].cells[j].valign;
+	                    cellHeight=modelTbl.rows[i].cells[j].height;
+	                    cellWidth=modelTbl.rows[i].cells[j].width;
+	                    cellNoWarp=modelTbl.rows[i].cells[j].noWarp;
+	                    cellColspan=modelTbl.rows[i].cells[j].colSpan;
+	                    cellObj=rowObj.insertCell();
+	                    cellObj.align=cellAlign;
+	                    cellObj.valign=cellVAlign;
+	                    cellObj.height=cellHeight;
+	                    cellObj.width=cellWidth;
+	                    cellObj.className=cellClass;
+	                    cellObj.noWarp=cellNoWarp;
+	                    cellObj.innerHTML=cellHtml;
+	                    cellObj.colSpan = cellColspan;
+// 	                    alert(cellHtml);
+	                }
+	            }
+	        }
+	        function deleteRow(opTbl,index)
+	        {
+	            if(opTbl==null)	return;
+	            if(index==-1)
+	            {
+	                if(opTbl.rows.length>1)
+	                {
+	                	opTbl.deleteRow(opTbl.rows.length-1);
+	                }
+	            }
+	            else
+	            {
+	                opTbl.deleteRow(index);
+	            }
+	        }
+		 	function xlsCopy(){
+				var reportDate = document.getElementById("dataDate").value;
+	        	var reportId =4102;
+	        	var organId = document.studentLoanForm.organId.value;
+				var value = document.studentLoanForm.importXlsFile.value;
+				var type=2;
+				if (validateFile(value,'xls')) {
+				document.studentLoanForm.action = "reportView.do?method=uploadExcel&reportDate="+reportDate+"&reportId="+reportId+"&organId="+organId+"&type="+type;
+			    document.studentLoanForm.submit();
+				}
+			} 
+			//鏂板瀵煎叆鍔熻兘
+		 	function xlsCopy1(){
+				var reportDate = document.getElementById("dataDate").value;
+	        	var reportId =4102;
+	        	var organId = document.studentLoanForm.organId.value;
+				var value = document.studentLoanForm.importXlsFile.value;
+				if (validateFile(value,'xls')) {
+					if(confirm(' 继续执行将删除该报表中原有数据,你确定要继续吗? ')){				
+						document.studentLoanForm.action = "reportView.do?method=uploadExcel1&reportDate="+reportDate+"&reportId="+reportId+"&organId="+organId;
+					    document.studentLoanForm.submit();
+					}
+				}
+			} 
+
+			 function validateFile(value,fileExc){
+					var idx = value.lastIndexOf(".");
+					if(idx < 0)	{
+						alert("请选择一个有效的导入文件，扩展名为*."+fileExc);
+						return false;
+					}else{
+						var importFileExc =  value.substr(idx+1);
+						if(importFileExc != fileExc){
+							alert("请选择一个有效的导入文件，扩展名为*."+fileExc);
+							return false;
+						}
+					}
+					return true;
+			} 
+		</script>
+</head>
+<body leftmargin="0" topmargin="0">
+	<div id="check"
+		style="filter: alpha(opacity =   80); visibility: hidden; position: absolute; top: 100; left: 260; z-index: 10; width: 200; height: 74">
+		<table WIDTH='100%' BORDER='0' CELLSPACING='0' CELLPADDING='0'>
+			<tr>
+				<td width='50%' bgcolor='#104A7B'>
+					<table WIDTH='100%' height='70' BORDER='0' CELLSPACING='2'
+						CELLPADDING='0'>
+						<tr>
+							<td bgcolor='#EEEEEE' align='center'><nobr>
+									&nbsp;&nbsp;&nbsp;
+									数据加载中，请稍候...
+									&nbsp;&nbsp;&nbsp; </td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<table border="0" cellpadding="0" cellspacing="0" width="2000"
+		height="100%">
+		<tr>
+			<td width="100%" background="images/f02.gif" height="36">
+				<table border="0" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<td width="19"><img border="0" src="images/f01.gif"
+							width="19" height="36"> <input type="hidden" value=""
+							id="selectReport" /> <input type="hidden" value=""
+							id="selectReport1" /></td>
+						<td width="42"><img border="0" src="images/f03.gif"
+							width="33" height="16"></td>
+						<td>
+								<p style="margin-top: 3">
+									<font class=b><b>编辑报表</b></font>
+								</p>
+							 </td>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td width="100%" bgcolor="#EEEEEE" valign="top"><br> <br>
+				<form name="reportViewForm" method="post" action="/slsint/reportView.do?method=save" enctype="multipart/form-data" id="studentLoanForm">
+					<input type="hidden" name="organId" value="10000000" />
+					<input type="hidden" name="reportId" value="4102" />
+					<input type="hidden" name="filledFlag" value="" />
+					<input type="hidden" name="openFlag" id="openFlag" value="">
+					<input type="hidden" name="organCode" id="organCode" value="10000000">
+					<table width="99%" align="center" cellpadding="1" cellspacing="1"
+						class="TableBgColor">
+						<tr>
+							<td align="left" class="FormBottom" height="30">&nbsp;&nbsp;
+								 
+									
+										
+											<input id="btnReturn" class="btn" name="btnReturn"
+												style="Width: 70"
+												onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+												type="button" value="返回"
+												onclick="window.location.href='reportView.do?method=enterInputSearch'" />
+										
+										
+										EXCEL文件：
+										<input type="file" name="importXlsFile" value="" style="width:450" class="file" />
+										<input type="button" class="btn"
+											value="新增导入"
+											onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+											style="width: 80; height: 20;" onclick="xlsCopy();">
+											<input type="button" class="btn"
+											value="删除导入"
+											onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+											style="width: 80; height: 20;" onclick="xlsCopy1();">
+										
+									
+									<input type="button"
+										value="导出数据"
+										class="btn" id="exportData" />&nbsp;&nbsp; 
+								
+								 <select name="reptargetid" id="reptargetid"
+								style="width: 100px;">
+									
+										
+									
+										
+									
+										
+											<option value="3"
+												>
+												产品种类
+											</option>
+										
+									
+										
+									
+										
+									
+										
+									
+										
+									
+										
+											<option value="8"
+												>
+												募集方式
+											</option>
+										
+									
+										
+											<option value="9"
+												>
+												管理方式
+											</option>
+										
+									
+										
+											<option value="10"
+												>
+												运行方式
+											</option>
+										
+									
+										
+											<option value="11"
+												>
+												产品类型
+											</option>
+										
+									
+										
+											<option value="12"
+												>
+												业务模式
+											</option>
+										
+									
+										
+											<option value="13"
+												>
+												收益保障标识
+											</option>
+										
+									
+										
+											<option value="14"
+												>
+												本金保障标识
+											</option>
+										
+									
+										
+									
+										
+									
+										
+									
+										
+									
+										
+											<option value="19"
+												>
+												发行机构提前终止权标识
+											</option>
+										
+									
+										
+											<option value="20"
+												>
+												客户赎回权标识
+											</option>
+										
+									
+										
+											<option value="21"
+												>
+												产品增信标识
+											</option>
+										
+									
+										
+									
+										
+									
+										
+									
+										
+									
+										
+									
+										
+									
+										
+											<option value="28"
+												>
+												受托职责
+											</option>
+										
+									
+										
+											<option value="29"
+												>
+												合作模式
+											</option>
+										
+									
+							</select>&nbsp;&nbsp; <input type="text" name="targetvalue"
+								id="targetvalue" value="" /> <input
+								type="button"
+								value="查询数据"
+								class="btn" onclick="viewReport()" />
+							</td>
+						</tr>
+					</table>
+
+					<table width="99%" align="center" cellpadding="1" cellspacing="1"
+						class="TableBgColor">
+						<tr>
+							<td class="TdBGColor1" width="100%" height="20" align="left"
+								valign=middle nowrap>&nbsp;&nbsp;填报机构:<input type="text"
+								style="height: 19; valign: top;"
+								value="集团"
+								name="organName" readonly />&nbsp;&nbsp;<!--填报日期:&nbsp;&nbsp;--> <input
+								id="dataDate" type="hidden" style="height: 19;"
+								value="2017-05-30" name="dataDate" readonly />
+								单位:<input
+								id="moneyunit" type="text" style="height: 19;"
+								value="1货币单位" name="moneyunit" readonly />&nbsp;&nbsp;
+								报告日期:<input
+								id="dataDate1" type="text" style="height: 19;"
+								value="201705" name="dataDate1" readonly />&nbsp;&nbsp;
+								报表名称:<input
+								id="reportName" type="text" style="height: 19; width: 300;"
+								value="产品基本信息" name="reportName"
+								readonly />&nbsp;&nbsp;
+							</td>
+						</tr>
+					</table>
+					<table width="99%" align="center" cellpadding="1" cellspacing="1"
+						class="table">
+						
+							
+						
+						
+					</table>
+					<form>
+						<table id="budgetTbl" width="99%" align="center" cellpadding="1"
+							cellspacing="1" class="TableBgColor">
+							<tr>
+								<td class="TdBGColor2" align="center" nowrap>序号</td>
+								
+									<td id="titleName1"
+										class="TdBGColor2" align="center"
+										width="">产品代码</td>
+								
+									<td id="titleName2"
+										class="TdBGColor2" align="center"
+										width="">发起机构代码</td>
+								
+									<td id="titleName3"
+										class="TdBGColor2" align="center"
+										width="">产品种类</td>
+								
+									<td id="titleName4"
+										class="TdBGColor2" align="center"
+										width="">产品名称</td>
+								
+									<td id="titleName5"
+										class="TdBGColor2" align="center"
+										width="">产品品牌</td>
+								
+									<td id="titleName6"
+										class="TdBGColor2" align="center"
+										width="">产品期次</td>
+								
+									<td id="titleName7"
+										class="TdBGColor2" align="center"
+										width="">发起机构内部产品代码</td>
+								
+									<td id="titleName8"
+										class="TdBGColor2" align="center"
+										width="">募集方式</td>
+								
+									<td id="titleName9"
+										class="TdBGColor2" align="center"
+										width="">管理方式</td>
+								
+									<td id="titleName10"
+										class="TdBGColor2" align="center"
+										width="">运行方式</td>
+								
+									<td id="titleName11"
+										class="TdBGColor2" align="center"
+										width="">产品类型</td>
+								
+									<td id="titleName12"
+										class="TdBGColor2" align="center"
+										width="">业务模式</td>
+								
+									<td id="titleName13"
+										class="TdBGColor2" align="center"
+										width="">收益保障标识</td>
+								
+									<td id="titleName14"
+										class="TdBGColor2" align="center"
+										width="">本金保障标识</td>
+								
+									<td id="titleName15"
+										class="TdBGColor2" align="center"
+										width="">预计客户最高收益率</td>
+								
+									<td id="titleName16"
+										class="TdBGColor2" align="center"
+										width="">预计客户最低收益率</td>
+								
+									<td id="titleName17"
+										class="TdBGColor2" align="center"
+										width="">募集起始日期</td>
+								
+									<td id="titleName18"
+										class="TdBGColor2" align="center"
+										width="">募集结束日期</td>
+								
+									<td id="titleName19"
+										class="TdBGColor2" align="center"
+										width="">发行机构提前终止权标识</td>
+								
+									<td id="titleName20"
+										class="TdBGColor2" align="center"
+										width="">客户赎回权标识</td>
+								
+									<td id="titleName21"
+										class="TdBGColor2" align="center"
+										width="">产品增信标识</td>
+								
+									<td id="titleName22"
+										class="TdBGColor2" align="center"
+										width="">境内托管机构代码</td>
+								
+									<td id="titleName23"
+										class="TdBGColor2" align="center"
+										width="">境外托管机构国别</td>
+								
+									<td id="titleName24"
+										class="TdBGColor2" align="center"
+										width="">境外托管机构名称</td>
+								
+									<td id="titleName25"
+										class="TdBGColor2" align="center"
+										width="">产品起始日期</td>
+								
+									<td id="titleName26"
+										class="TdBGColor2" align="center"
+										width="">产品预计终止日期</td>
+								
+									<td id="titleName27"
+										class="TdBGColor2" align="center"
+										width="">产品对应资产池代码</td>
+								
+									<td id="titleName28"
+										class="TdBGColor2" align="center"
+										width="">受托职责</td>
+								
+									<td id="titleName29"
+										class="TdBGColor2" align="center"
+										width="">合作模式</td>
+								
+								
+									<td class="TdBGColor2" align="center">删除数据</td>
+								
+							</tr>
+							
+								
+									
+									<tr>
+										<td>1</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_1_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_1"
+														maxlength="100"
+														id='69999077_1inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="4555A" />
+													<input type="hidden" name="69999077_1"
+														align="left"
+														value="4555A" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_2_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_2"
+														maxlength="100"
+														id='69999077_2inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="" />
+													<input type="hidden" name="69999077_2"
+														align="left"
+														value="" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_3_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_3"
+																id="69999077_3"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="1"
+																				>
+																				1-理财产品
+																			</option>
+																		
+																			<option value="2"
+																				>
+																				2-资金信托
+																			</option>
+																		
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_4_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_4"
+														maxlength="100"
+														id='69999077_4inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="" />
+													<input type="hidden" name="69999077_4"
+														align="left"
+														value="" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_5_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_5"
+														maxlength="100"
+														id='69999077_5inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="" />
+													<input type="hidden" name="69999077_5"
+														align="left"
+														value="" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_6_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_6"
+														maxlength="100"
+														id='69999077_6inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="" />
+													<input type="hidden" name="69999077_6"
+														align="left"
+														value="" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_7_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_7"
+														maxlength="100"
+														id='69999077_7inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="" />
+													<input type="hidden" name="69999077_7"
+														align="left"
+														value="" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_8_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_8"
+																id="69999077_8"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="1"
+																				>
+																				1-公募
+																			</option>
+																		
+																			<option value="2"
+																				>
+																				2-私募
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_9_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_9"
+																id="69999077_9"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="1"
+																				>
+																				1-集合管理
+																			</option>
+																		
+																			<option value="2"
+																				>
+																				2-单独管理
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_10_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_10"
+																id="69999077_10"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="2"
+																				>
+																				2-开放式净值型
+																			</option>
+																		
+																			<option value="3"
+																				>
+																				3-开放式非净值型
+																			</option>
+																		
+																			<option value="4"
+																				>
+																				4-封闭式净值型
+																			</option>
+																		
+																			<option value="5"
+																				>
+																				5-封闭式非净值型
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_11_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_11"
+																id="69999077_11"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="001"
+																				>
+																				001-债券及货币市场类
+																			</option>
+																		
+																			<option value="002"
+																				>
+																				002-债权类
+																			</option>
+																		
+																			<option value="003"
+																				>
+																				003-资本市场类
+																			</option>
+																		
+																			<option value="004"
+																				>
+																				004-股权类
+																			</option>
+																		
+																			<option value="005"
+																				>
+																				005-混合类
+																			</option>
+																		
+																			<option value="006"
+																				>
+																				006-另类
+																			</option>
+																		
+																			<option value="200"
+																				>
+																				200-结构性
+																			</option>
+																		
+																			<option value="300"
+																				>
+																				300-QDII
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_12_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_12"
+																id="69999077_12"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="1"
+																				>
+																				1-表内存款
+																			</option>
+																		
+																			<option value="2"
+																				>
+																				2-表内非存款负债
+																			</option>
+																		
+																			<option value="3"
+																				>
+																				3-表外
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_13_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_13"
+																id="69999077_13"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="2"
+																				>
+																				否
+																			</option>
+																		
+																			<option value="1"
+																				>
+																				是
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_14_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_14"
+																id="69999077_14"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="2"
+																				>
+																				否
+																			</option>
+																		
+																			<option value="1"
+																				>
+																				是
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_15_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_15"
+														maxlength="100"
+														id='69999077_15inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="" />
+													<input type="hidden" name="69999077_15"
+														align="left"
+														value="" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_16_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_16"
+														maxlength="100"
+														id='69999077_16inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="" />
+													<input type="hidden" name="69999077_16"
+														align="left"
+														value="" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												 
+													<input type="hidden"
+														name="69999077_17_id" align="left"
+														value="69999077" />
+													<input id=""
+														disabled="disabled" name="69999077_17"
+														align="left" style="height: 21;" type="text" size="10"
+														value=""
+														onfocus="WdatePicker()" />
+													<input id="69999077_17" type="hidden"
+														name="69999077_17" align="left"
+														style="height: 21px;" size="10"
+														value="" />
+												  
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												 
+													<input type="hidden"
+														name="69999077_18_id" align="left"
+														value="69999077" />
+													<input id=""
+														disabled="disabled" name="69999077_18"
+														align="left" style="height: 21;" type="text" size="10"
+														value=""
+														onfocus="WdatePicker()" />
+													<input id="69999077_18" type="hidden"
+														name="69999077_18" align="left"
+														style="height: 21px;" size="10"
+														value="" />
+												  
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_19_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_19"
+																id="69999077_19"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																		
+																			<option value="2"
+																				>
+																				无
+																			</option>
+																		
+																			<option value="1"
+																				>
+																				有
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_20_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_20"
+																id="69999077_20"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="2"
+																				>
+																				无
+																			</option>
+																		
+																			<option value="1"
+																				>
+																				有
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_21_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_21"
+																id="69999077_21"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																		
+																			<option value="2"
+																				>
+																				否
+																			</option>
+																		
+																			<option value="1"
+																				>
+																				是
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_22_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_22"
+														maxlength="100"
+														id='69999077_22inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="0.0" />
+													<input type="hidden" name="69999077_22"
+														align="left"
+														value="0.0" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_23_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_23"
+														maxlength="100"
+														id='69999077_23inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="0.0" />
+													<input type="hidden" name="69999077_23"
+														align="left"
+														value="0.0" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_24_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_24"
+														maxlength="100"
+														id='69999077_24inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="0.0" />
+													<input type="hidden" name="69999077_24"
+														align="left"
+														value="0.0" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												 
+													<input type="hidden"
+														name="69999077_25_id" align="left"
+														value="69999077" />
+													<input id=""
+														disabled="disabled" name="69999077_25"
+														align="left" style="height: 21;" type="text" size="10"
+														value="0.0"
+														onfocus="WdatePicker()" />
+													<input id="69999077_25" type="hidden"
+														name="69999077_25" align="left"
+														style="height: 21px;" size="10"
+														value="0.0" />
+												  
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												 
+													<input type="hidden"
+														name="69999077_26_id" align="left"
+														value="69999077" />
+													<input id=""
+														disabled="disabled" name="69999077_26"
+														align="left" style="height: 21;" type="text" size="10"
+														value="0.0"
+														onfocus="WdatePicker()" />
+													<input id="69999077_26" type="hidden"
+														name="69999077_26" align="left"
+														style="height: 21px;" size="10"
+														value="0.0" />
+												  
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												>
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												   
+												
+													<input type="hidden"
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														name="69999077_27_id" align="left"
+														value="69999077" />
+													<input
+														onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+														disabled="disabled"
+														name="69999077_27"
+														maxlength="100"
+														id='69999077_27inputnull' align="left"
+														style="height: 21px; width: ;"
+														type="text" size="12"
+														value="0.0" />
+													<input type="hidden" name="69999077_27"
+														align="left"
+														value="0.0" />
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_28_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_28"
+																id="69999077_28"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="1"
+																				>
+																				1-主动管理业务
+																			</option>
+																		
+																			<option value="2"
+																				>
+																				2-被动管理业务
+																			</option>
+																		
+																	
+																
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+											<td class="TdBGColor2" align="center"
+												style="position:relative">
+												 
+												 
+												
+												 
+												 
+												 
+												 
+												 
+												 
+												
+													<input type="hidden"
+														name="69999077_29_id" align="left"
+														value="69999077" />
+													
+													
+															<select name="69999077_29"
+																id="69999077_29"
+																onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+																style="height: 21; width: ;"
+																disabled="disabled">
+																<option selected="selected" value="">
+																	请选择
+																</option>
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																
+																	
+																		
+																			<option value="11"
+																				>
+																				11-独立运作
+																			</option>
+																		
+																			<option value="12"
+																				>
+																				12-银信合作
+																			</option>
+																		
+																			<option value="13"
+																				>
+																				13-银保合作
+																			</option>
+																		
+																			<option value="14"
+																				>
+																				14-银基合作
+																			</option>
+																		
+																			<option value="15"
+																				>
+																				15-银证合作
+																			</option>
+																		
+																			<option value="16"
+																				>
+																				16-混合类
+																			</option>
+																		
+																			<option value="17"
+																				>
+																				17-其他
+																			</option>
+																		
+																			<option value="18"
+																				>
+																				18-不适用
+																			</option>
+																		
+																	
+																
+																	
+																
+															</select>
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+															
+																
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																		
+																	
+																
+															
+																
+															
+													
+												   
+												</td>
+										
+										
+											<td><input type="hidden" name="dataSort"
+												value="69999077"> <input
+												type="hidden" name="arrayDatas" id="arrayDatas"> <a
+												href='#'><img border='0'
+													src='/slsint/images/datadel.gif' width='16'
+													height='16'
+													onclick="delrow(this,69999077)"></a>
+											</td>
+										
+										
+											<td class="TdBGColor2" align="center" width="50px"><input
+												type="button" value="保存"
+												id='69999077_29savebtn'
+												disabled="disabled"
+												onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+												class="btn"
+												onclick="singleUpdate('',this,'1','4102');" />
+											</td>
+											<td class="TdBGColor2" align="center" width="50px"><input
+												type="button" value="编辑"
+												id='69999077_29editbtn'
+												onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+												class="btn"
+												onclick=" singleUpdate('',this,'2','4102');" />
+											</td>
+										
+										
+									</tr>
+								
+							
+						</table>
+					</form>
+					<table width="99%" align="center" cellpadding="1" cellspacing="1"
+						class="TableBgColor">
+						<tr>
+							<td align="left" class="FormBottom" height="30">&nbsp;&nbsp;
+								
+									 <input type="button" class="btn" value="增加"
+										name="queding" onClick="addrow();" style="width: 70">&nbsp;&nbsp;&nbsp;&nbsp;
+										<input type="button" id="69999077_29savebtn1"
+										value="保存当前页"
+										name="queding" disabled="disabled"
+										onClick="onSubmit('',this,'1','4102');"
+										style="width: 80" /> &nbsp;&nbsp;&nbsp;&nbsp;
+										<input type="button" id="69999077_29editbtn1"
+										value="编辑当前页"
+										name="queding"
+										onClick="onSubmit('',this,'2','4102');"
+										style="width: 80" />
+								
+							</td>
+						</tr>
+					</table>
+				</form></td>
+		</tr>
+	</table>
+
+	<table style="position: absolute; display: none" id="budgetModel"
+		border="0" cellspacing="0" cellpadding="0" width="2000">
+		<tr>
+			<td><input type="hidden" name="dataSort"
+				value=""> <input
+				type="hidden" name="arrayDatasById" id="arrayDatasById" value=""></td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_1inputnull'
+							name="1_1" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_2inputnull'
+							name="1_2" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_3"
+								id="1_3"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="1"
+												>
+												1-理财产品
+											</option>
+										
+											<option value="2"
+												>
+												2-资金信托
+											</option>
+										
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_4inputnull'
+							name="1_4" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_5inputnull'
+							name="1_5" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_6inputnull'
+							name="1_6" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_7inputnull'
+							name="1_7" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_8"
+								id="1_8"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="1"
+												>
+												1-公募
+											</option>
+										
+											<option value="2"
+												>
+												2-私募
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_9"
+								id="1_9"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="1"
+												>
+												1-集合管理
+											</option>
+										
+											<option value="2"
+												>
+												2-单独管理
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_10"
+								id="1_10"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="2"
+												>
+												2-开放式净值型
+											</option>
+										
+											<option value="3"
+												>
+												3-开放式非净值型
+											</option>
+										
+											<option value="4"
+												>
+												4-封闭式净值型
+											</option>
+										
+											<option value="5"
+												>
+												5-封闭式非净值型
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_11"
+								id="1_11"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="001"
+												>
+												001-债券及货币市场类
+											</option>
+										
+											<option value="002"
+												>
+												002-债权类
+											</option>
+										
+											<option value="003"
+												>
+												003-资本市场类
+											</option>
+										
+											<option value="004"
+												>
+												004-股权类
+											</option>
+										
+											<option value="005"
+												>
+												005-混合类
+											</option>
+										
+											<option value="006"
+												>
+												006-另类
+											</option>
+										
+											<option value="200"
+												>
+												200-结构性
+											</option>
+										
+											<option value="300"
+												>
+												300-QDII
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_12"
+								id="1_12"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="1"
+												>
+												1-表内存款
+											</option>
+										
+											<option value="2"
+												>
+												2-表内非存款负债
+											</option>
+										
+											<option value="3"
+												>
+												3-表外
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_13"
+								id="1_13"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="2"
+												>
+												否
+											</option>
+										
+											<option value="1"
+												>
+												是
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_14"
+								id="1_14"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="2"
+												>
+												否
+											</option>
+										
+											<option value="1"
+												>
+												是
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_15inputnull'
+							name="1_15" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_16inputnull'
+							name="1_16" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					
+						<input id="1_17"
+							name="1_17" align="left"
+							style="height: 21;" type="text" size="10" value=""
+							onfocus="WdatePicker()" />
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					
+						<input id="1_18"
+							name="1_18" align="left"
+							style="height: 21;" type="text" size="10" value=""
+							onfocus="WdatePicker()" />
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_19"
+								id="1_19"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+										
+											<option value="2"
+												>
+												无
+											</option>
+										
+											<option value="1"
+												>
+												有
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_20"
+								id="1_20"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+										
+											<option value="2"
+												>
+												无
+											</option>
+										
+											<option value="1"
+												>
+												有
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_21"
+								id="1_21"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+										
+											<option value="2"
+												>
+												否
+											</option>
+										
+											<option value="1"
+												>
+												是
+											</option>
+										
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_22inputnull'
+							name="1_22" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_23inputnull'
+							name="1_23" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_24inputnull'
+							name="1_24" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					
+						<input id="1_25"
+							name="1_25" align="left"
+							style="height: 21;" type="text" size="10" value=""
+							onfocus="WdatePicker()" />
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					
+						<input id="1_26"
+							name="1_26" align="left"
+							style="height: 21;" type="text" size="10" value=""
+							onfocus="WdatePicker()" />
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					 
+					 
+					 
+					
+						<input id='1_27inputnull'
+							name="1_27" align="left"
+							style="height: 21px; width: ;"
+							type="text" size="12"
+							maxlength="100"
+							onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+							value="" />
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_28"
+								id="1_28"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="1"
+												>
+												1-主动管理业务
+											</option>
+										
+											<option value="2"
+												>
+												2-被动管理业务
+											</option>
+										
+									
+								
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+				<td class="TdBGColor2" align="center" style="postion: relative">
+					 
+					
+					
+					
+					
+					
+					
+					 
+					
+						
+						
+							<select name="1_29"
+								id="1_29"
+								onKeyDown="if(event.keyCode == 13)event.keyCode = 9;"
+								style="height: 21; width: ;"
+								>
+								<option selected="selected" value="">
+									请选择
+								</option>
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+								
+									
+										
+											<option value="11"
+												>
+												11-独立运作
+											</option>
+										
+											<option value="12"
+												>
+												12-银信合作
+											</option>
+										
+											<option value="13"
+												>
+												13-银保合作
+											</option>
+										
+											<option value="14"
+												>
+												14-银基合作
+											</option>
+										
+											<option value="15"
+												>
+												15-银证合作
+											</option>
+										
+											<option value="16"
+												>
+												16-混合类
+											</option>
+										
+											<option value="17"
+												>
+												17-其他
+											</option>
+										
+											<option value="18"
+												>
+												18-不适用
+											</option>
+										
+									
+								
+									
+								
+							</select>
+						
+					 
+					 
+					 
+					
+				</td>
+			
+			<td><a href='#'><img border='0'
+					src='/slsint/images/datadel.gif' width='16' height='16'
+					onclick='delrow(this)'></a></td>
+			<td class="TdBGColor2" align="center" width="100px"><input
+				type="button" value="保存"
+				id='1_29savebtn'
+				onKeyDown="if(event.keyCode == 13)event.keyCode = 9;" class="btn"
+				onclick="singleUpdate('',this,'1','4102');" />
+		</tr>
+	</table>
+	<form id="pageForm" name="pageForm" method="post" action="">
+		<input type="hidden" name="dataDate"
+			value="2017-05-30"> <input type="hidden"
+			name="reportId" value="4102"> <input
+			type="hidden" name="organId" value="10000000">
+	</form>
+</body>
+<script language="javascript">	
+	xlsStr = "";
+			if (xlsStr !='' && xlsStr != null){
+				      data = xlsStr.split("|");												
+							for (var i=4;i<data.length;i++){
+								rowData = data[i].split(",");
+								xlsaddrow(rowData);
+							}
+							alert("数据导入成功！");
+			}
+							
+			function viewReport(){
+				var  reptargetid = document.getElementById("reptargetid").value;
+			 	var  repgetvalue = document.getElementById("targetvalue").value;
+			  	var url = "reportView.do?method=edit&dataId=" + 
+			  	                                                  "&organId=10000000" +
+			  	                                                  "&reptargetid="+reptargetid+""+
+			  	                                                  "&reportTargetList=[com.krm.slsint.reportdefine.vo.ReportTarget@1676fe3a[ReportTarget=13672], com.krm.slsint.reportdefine.vo.ReportTarget@5e2c9d5b[ReportTarget=13673], com.krm.slsint.reportdefine.vo.ReportTarget@430ef1aa[ReportTarget=13674], com.krm.slsint.reportdefine.vo.ReportTarget@a1bf24b[ReportTarget=13675], com.krm.slsint.reportdefine.vo.ReportTarget@30c01f1c[ReportTarget=13676], com.krm.slsint.reportdefine.vo.ReportTarget@153a8045[ReportTarget=13677], com.krm.slsint.reportdefine.vo.ReportTarget@33bb3ce6[ReportTarget=13678], com.krm.slsint.reportdefine.vo.ReportTarget@499b3a92[ReportTarget=13679], com.krm.slsint.reportdefine.vo.ReportTarget@6e226cfe[ReportTarget=13680], com.krm.slsint.reportdefine.vo.ReportTarget@1621d02f[ReportTarget=13681], com.krm.slsint.reportdefine.vo.ReportTarget@5eac903[ReportTarget=13682], com.krm.slsint.reportdefine.vo.ReportTarget@7932e6fd[ReportTarget=13683], com.krm.slsint.reportdefine.vo.ReportTarget@7cdb2a34[ReportTarget=13684], com.krm.slsint.reportdefine.vo.ReportTarget@18affbf6[ReportTarget=13685], com.krm.slsint.reportdefine.vo.ReportTarget@49c6e023[ReportTarget=13686], com.krm.slsint.reportdefine.vo.ReportTarget@1fa53fac[ReportTarget=13687], com.krm.slsint.reportdefine.vo.ReportTarget@19f7456f[ReportTarget=13688], com.krm.slsint.reportdefine.vo.ReportTarget@38ef87ba[ReportTarget=13689], com.krm.slsint.reportdefine.vo.ReportTarget@75b7e189[ReportTarget=13690], com.krm.slsint.reportdefine.vo.ReportTarget@7b3825bf[ReportTarget=13691], com.krm.slsint.reportdefine.vo.ReportTarget@23365dcc[ReportTarget=13692], com.krm.slsint.reportdefine.vo.ReportTarget@46480e23[ReportTarget=13693], com.krm.slsint.reportdefine.vo.ReportTarget@24983fe1[ReportTarget=13694], com.krm.slsint.reportdefine.vo.ReportTarget@789df8c[ReportTarget=13695], com.krm.slsint.reportdefine.vo.ReportTarget@6cb36431[ReportTarget=13696], com.krm.slsint.reportdefine.vo.ReportTarget@757704b7[ReportTarget=13697], com.krm.slsint.reportdefine.vo.ReportTarget@58d6c6a0[ReportTarget=13698], com.krm.slsint.reportdefine.vo.ReportTarget@7c8a5ff0[ReportTarget=13699], com.krm.slsint.reportdefine.vo.ReportTarget@60a0c570[ReportTarget=13700]]" +
+			  	                                                  "&reportDate=2017-05-30" +
+			  	                                                  "&openmode=" +
+			  	                                                  "&inputToZ02=" +
+			  	                                                  "&reportId=4102" + 
+			  	                                                  "&repgetvalue="+repgetvalue+
+			  	                                                  "&showret=yes"
+			  	                                                  ; 
+				window.location.href=url;
+			}
+			function exitBl(){
+				if(confirm(' ???exitBl.confim??? ')){
+					var reportId = 4102;
+					var url =	"reportView.do?method=enterInputSearch1&levelFlag=2&editFlag=1&dataDate=2017-05-30 &organId=10000000 &reportId=4102 ";
+					window.location.href=url;
+				}
+			}
+			
+			function repData(){
+				if(confirm(' 是否要恢复数据？ ')){
+					var reportId=4102;
+					var reportDate=document.getElementById("dataDate").value;
+					var url =	"reportView.do?method=repDataReplay&date="+reportDate+"&reportId="+reportId+"&type=1";
+					window.location.href=url;
+				}
+			}
+
+			function saveData(){
+				if(confirm(' 1.选择“全部提交”，数据进入数据库正式存储。\n2.如再修改，需在【逻辑校验查询】先对上报之前补录的字段解锁再修改;选择“取消”，可点击“重新修改”继续进行数据修改。\n3.您必须在规定的上报时限内完成“全部提交”，否则无法进入数据审核程序。\n您确定现在就做“全部提交”吗？ ')){
+					var linkUrl = "http://localhost:48080/slsint/dataFill.do?method=saveData";
+					document.studentLoanForm.action = linkUrl;
+					document.studentLoanForm.method = "post";
+					document.studentLoanForm.submit();
+				}else{
+					return false;
+				}
+			}
+			
+			function clearNoNum(obj){
+				var t=obj.value.charAt(0);
+				obj.value=obj.value.replace(/[^\d.]/g,"");
+				obj.value=obj.value.replace(/^\./g,"");
+				obj.value=obj.value.replace(/\.{2,}/g,".");
+				obj.value=obj.value.replace(/^(\d+\.\d{1,2})(.*)?$/,'$1');
+				if(t=='-'){
+					obj.value='-'+obj.value;
+				}
+			}
+			
+			function onSubmit(openmode,obj,type,reportId){
+				if(type==2){
+					var len=document.studentLoanForm.elements.length;
+					var dataSort = obj.id.split('_');
+					if (dataSort.length>=2){
+						var first=dataSort[0].substring(0,dataSort[0].length-1);
+						var last=dataSort[1].substring(0,dataSort[1].length-8);
+						var saveidbtn=dataSort[0]+"_"+last+"savebtn1";
+						var editidbtn=obj.id;
+						for(var i=0;i<len;i++){
+								var x=document.studentLoanForm.elements[i];
+								if(x){
+									if(x.value=='淇濆瓨'){
+										document.getElementById(x.id).disabled='';
+									}else if(x.value=='缂栬緫'){
+										var ids=x.id;
+										document.getElementById(ids).disabled='true';
+									}else{
+											x.disabled='';
+									}
+								}
+						}			  
+						document.getElementById(saveidbtn).disabled='';
+						document.getElementById(editidbtn).disabled='true';
+						return false;
+					}else{
+						document.getElementById("savebtn1").disabled='';
+						document.getElementById("editbtn1").disabled='true';
+						return false;
+					}
+				}
+				if (checkNecessaryInputAll(document.studentLoanForm,reportId)){
+					var linkUrl = "http://localhost:48080/slsint/reportView.do?method=save&openmode="+openmode+
+					//	"&delItems=" + delItems + "" +
+						"&page=1&pageCnt=1&reportDate=2017-05-30&reportId=4102&organCode=10000000&organId=10000000&dataId=' />";
+					document.studentLoanForm.action = linkUrl;
+					document.studentLoanForm.method = "post";
+					document.studentLoanForm.submit();
+				}
+			}
+			function checkNecessaryInputAll(obj,reportId)
+			{
+				var checkValue = "";
+				var s="";
+				var q;
+				var j=0;
+				for (q=0 ;q<obj.elements.length;q++)
+				{
+					var newObj = obj.elements[q].id;
+					if (newObj!=null&&newObj!=""&&newObj.length>0){
+						var newArrayObj = newObj.split("_");
+						if (newArrayObj!=null&&newArrayObj.length>1){
+							if (((newArrayObj[1].lastIndexOf('inputv'))==-1)&&((newArrayObj[1].lastIndexOf('savebtn'))==-1)&&((newArrayObj[1].lastIndexOf('editbtn'))==-1)){
+								if((newArrayObj[1].lastIndexOf('inputnull'))==-1){
+									if ((newArrayObj[1].lastIndexOf('genum'))==-1){
+										if(!checkNecessaryInputByObj(newObj,reportId)){
+											return false;
+										}
+									}else{
+										if(!checkNum(newObj,reportId)){
+											return false;
+										}
+									}
+									
+								}
+							}
+						}
+					}
+				}
+				return true;
+			}
+			
+			function checkNecessaryInputOne(obj,reportId,objId)
+			{
+				var checkValue = "";
+				var s="";
+				var q;
+				var j=0;
+				for (q=0 ;q<obj.elements.length;q++)
+				{
+					var newObj = obj.elements[q].id;
+					if (newObj!=null&&newObj!=""&&newObj.length>0){
+						var newArrayObj = newObj.split("_");
+						if (newArrayObj!=null&&newArrayObj.length>1){
+							if (((newArrayObj[1].lastIndexOf('savebtn'))==-1)&&((newArrayObj[1].lastIndexOf('editbtn'))==-1)){
+							if ((newArrayObj[1].lastIndexOf('inputv'))==-1){
+								if((newArrayObj[1].lastIndexOf('inputnull'))==-1){
+									if ((newArrayObj[1].lastIndexOf('genum'))==-1){
+										if (newArrayObj[0] ==objId){
+											if(!checkNecessaryInputByObj(newObj,reportId)){
+											   return false;
+											}
+										}
+									}else{
+										if (newArrayObj[0] ==objId){
+										    if (!checkNum(newObj,reportId)){
+										    	return false;
+										    }
+										}
+									}
+									
+								}
+							}
+						}
+					}
+				}
+			}
+			return true;
+		}
+			
+			function trim(str){
+			    str = str.replace(/^(\s|\u00A0)+/,'');   
+			    for(var i=str.length-1; i>=0; i--){   
+			        if(/\S/.test(str.charAt(i))){   
+			            str = str.substring(0, i+1);   
+			            break;   
+			        }   
+			    }   
+			    return str;   
+			}
+			
+		 function checkNum(newObj,reportId){
+			 var contractAmount = document.getElementById(newObj).value;
+				   var parnt = /^[1-9]\d*(\.\d+)?$/;
+				        if(!parnt.exec(contractAmount)){
+				            alert("你输入的金额有问题，请输入大于或等于0的整数或者小数");
+				            document.getElementById(newObj).focus();
+				            document.getElementById(newObj).style.background='red';
+				            return false;    
+				        }
+				        return true;
+				}
+	
+			function singleUpdate(openmode,obj,type,reportId) {
+				var dataSort = obj.id.split('_');
+				var objId = obj.id;
+				if(type==2){
+					for(var i=0;i<=140;i++){
+						var x=document.getElementById(dataSort[0]+"_"+(i));
+						var x1=document.getElementById(dataSort[0]+"_"+(i)+"inputnull");
+						var x2=document.getElementById(dataSort[0]+"_"+(i)+"inputv");
+						var x3=document.getElementById(dataSort[0]+"_"+(i)+"inputc");
+						
+						if(x){
+							x.disabled='';
+						}
+						if(x1){
+								x1.disabled='';
+						}
+						if(x2){
+								x2.disabled='';
+						}
+						if(x3){
+								x3.disabled='';
+						}
+					}
+					editobjId = objId.split('_');
+					saveObj =  editobjId[1].split('editbtn');
+					var saveid =editobjId[0]+'_'+saveObj[0]+'savebtn'; 
+					if(obj.disabled==''){
+						obj.disabled='true';
+						document.getElementById(saveid).disabled='';
+					}
+					return false;
+				} alert(1);
+				//  if (checkNecessaryInputOne(document.studentLoanForm ,reportId ,dataSort[0])){
+					var linkUrl = "http://localhost:48080/slsint/reportView.do?method=singleSave2&openmode="+openmode+
+					//"&delItems=" + delItems + "" +
+					"&page=1&pageCnt=1&reportDate=2017-05-30&reportId=4102&singleOrMore=&organCode=10000000&canEdit=1&organId=10000000&dataId=" +dataSort[0];
+					alert(linkUrl);
+					document.studentLoanForm.action = linkUrl;
+					document.studentLoanForm.method = "post";
+					document.studentLoanForm.submit();
+			 	/*  }else{
+			 		 
+			 	 } */
+				
+			}
+			function go() {
+			   	var pageNo = $("#pageNo").val();
+			   	if(pageNo<1) {
+			   		pageNo = 1;
+			   	}else if(pageNo>1){
+			   		pageNo = 1;
+			   	}
+				var canEdit = '1';
+				var inputToZ02='  ';
+				window.location.href = "reportView.do?method=edit&openmode=_self&levelFlag=&dataDate=2017-05-30&reportId=4102&organId=10000000&page=" + pageNo+"&inputToZ02="+inputToZ02+"&canEdit="+canEdit+"&showret=yes";
+			}
+			
+			$("#exportData").unbind("click");
+			$("#exportData").bind("click",function() {
+				 $("#exportData").attr("disabled","disabled");
+				 var url = "reportView.do?method=exportReportData&dataDate=2017-05-30&reportId=4102&organId=10000000&levelFlag=";
+				$.post(url,'',function(data){
+					if(data=="ok") {
+						$("#exportData").removeAttr("disabled");
+						window.location.href = "reportView.do?method=downloadExcel&dataDate=2017-05-30&reportId=4102&organId=10000000&levelFlag=";
+					}
+				}); 
+			});
+			$("#exportData").unbind("click");
+			 $("#exportData").bind("click",function() {
+				 $("#exportData").attr("disabled","disabled");
+				 var url = "reportView.do?method=exportReportData&dataDate=2017-05-30&reportId=4102&organId=10000000&levelFlag=&canEdit=1";
+				$.post(url,'',function(data){
+					if(data=="ok") {
+						$("#exportData").removeAttr("disabled");
+						window.location.href = "reportView.do?method=downloadExcel&dataDate=2017-05-30&reportId=4102&organId=10000000&levelFlag=";
+					}
+				}); 
+			});
+			$("#importData").unbind("click");
+			$("#importData").bind("click",function() {
+				var url = "reportView.do?method=enteryRepUpLoad&dataDate=2017-05-30&reportId=4102&levelFlag=";
+				window.location.href = url; 
+			});
+			
+</script>
+
+
+</html>

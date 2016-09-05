@@ -1,0 +1,201 @@
+$(function ()
+{
+    var $aga_fild = $("#aga");
+    var $agc_fild = $('#agc');
+    var $agd_fild = $("#agd");
+    var $toolbar = $("#toolbar");
+    var ClassData = [
+        {
+            "ID" : 1,
+            "Name" : "类1",
+            "Desc" : "类说明1",
+            "NameSpace" : "命名空间1"
+        },
+        {
+            "ID" : 2,
+            "Name" : "类2",
+            "Desc" : "类说明2",
+            "NameSpace" : "命名空间2"
+        },
+        {
+            "ID" : 3,
+            "Name" : "类3",
+            "Desc" : "类说明3",
+            "NameSpace" : "命名空间3"
+        }
+    ];
+    var FunctionData = [
+        {
+            "ID" : 1,
+            "Name" : "方法1",
+            "Desc" : "方法1说明",
+            "ReturnValue" : "返回值1",
+            "ClassID" : 1
+        },
+        {
+            "ID" : 2,
+            "Name" : "方法2",
+            "Desc" : "方法2说明",
+            "ReturnValue" : "返回值2",
+            "ClassID" : 1
+        },
+        {
+            "ID" : 3,
+            "Name" : "方法3",
+            "Desc" : "方法3说明",
+            "ReturnValue" : "返回值3",
+            "ClassID" : 2
+        },
+        {
+            "ID" : 4,
+            "Name" : "方法4",
+            "Desc" : "方法4说明",
+            "ReturnValue" : "返回值4",
+            "ClassID" : 3
+        }
+    ];
+    var ParamData = [
+        {
+            "ID" : 1,
+            "Name" : "参数1",
+            "Desc" : "参数说明1",
+            "ParamType" : "参数类型1",
+            "FunctionID" : 1
+        },
+        {
+            "ID" : 2,
+            "Name" : "参数2",
+            "Desc" : "参数说明2",
+            "ParamType" : "参数类型2",
+            "FunctionID" : 1
+        },
+        {
+            "ID" : 3,
+            "Name" : "参数3",
+            "Desc" : "参数说明3",
+            "ParamType" : "参数类型3",
+            "FunctionID" : 2
+        },
+        {
+            "ID" : 4,
+            "Name" : "参数4",
+            "Desc" : "参数说明4",
+            "ParamType" : "参数类型4",
+            "FunctionID" : 3
+        }
+    ];
+    $aga_fild.datagrid(
+    {
+        data : ClassData,
+        singleSelect : true,
+        fit : true,
+        columns : [[
+                {
+                    field : 'Name',
+                    title : '类名',
+                    width : 80
+                },
+                {
+                    field : 'Desc',
+                    title : '类说明',
+                    width : 100
+                },
+                {
+                    field : 'NameSpace',
+                    title : '命名空间',
+                    width : 60
+                },
+                {
+                    field : '_operate',
+                    title : '操作',
+                    align : 'center'
+                }, ]],
+        onLoadSuccess : function (data)
+        {
+            $aga_fild.datagrid("selectRow", 0);
+        },
+        onClickRow : function (rowIndex, rowData)
+        {
+            $agd_fild.datagrid('loadData',
+            {
+                total : 0,
+                rows : []
+            }
+            );
+        },
+        onSelect : function (rowIndex, rowData)
+        {
+            $agc_fild.datagrid(
+            {
+                data : FunctionData,
+                singleSelect : true,
+                fit : true,
+                columns : [[
+                        {
+                            field : 'Name',
+                            title : '方法名称',
+                            align : 'center',
+                            width : 80
+                        },
+                        {
+                            field : 'Desc',
+                            title : '方法说明',
+                            align : 'center',
+                            width : 150
+                        },
+                        {
+                            field : 'ReturnValue',
+                            title : '返回值',
+                            align : 'center',
+                            width : 100
+                        },
+                        {
+                            field : '_operate',
+                            title : '操作',
+                            align : 'center'
+                        }, ]],
+                onLoadSuccess : function (data)
+                {
+                    $agc_fild.datagrid("selectRow", 0);
+                },
+                onSelect : function (rowIndex, rowData)
+                {
+                    $agd_fild.datagrid(
+                    {
+                        data : ParamData,
+                        singleSelect : true,
+                        fit : true,
+                        columns : [[
+                                {
+                                    field : 'Name',
+                                    title : '参数名称',
+                                    align : 'center',
+                                    width : 80
+                                },
+                                {
+                                    field : 'Desc',
+                                    title : '参数说明',
+                                    align : 'center',
+                                    width : 100
+                                },
+                                {
+                                    field : 'ParamType',
+                                    title : '参数类型',
+                                    align : 'center',
+                                    width : 100
+                                },
+                                {
+                                    field : '_operate',
+                                    title : '操作',
+                                    align : 'center'
+                                }, ]]
+                    }
+                    );
+                }
+            }
+            );
+        }
+    }
+    );
+}
+);

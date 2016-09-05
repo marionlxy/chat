@@ -1,0 +1,108 @@
+com.krm.slsint.reportview.web.form.ReportViewForm@60d5ad52[
+  pkId=<null>
+  organId=10000000
+  reportId=4106
+  formatId=<null>
+  dataDate=2016-07-31
+  reportType=<null>
+  reportData=<null>
+  frequency=<null>
+  logType=<null>
+  unitCode=
+  cellRowCol=<null>
+  cellFormula=<null>
+  cellValue=<null>
+  reportName=产品资金募集信息
+  organName=集团
+  importFile=<null>
+  importXlsFile=<null>
+  filledFlag=<null>
+  fillUser=<null>
+  checkUser=<null>
+  phone=<null>
+  dataSort=<null>
+  customerCode=<null>
+  contractCode=<null>
+  mode=edit
+  sumType=
+  validatorResults=<null>
+  page=0
+]
+
+session={inputReportId=4106, curorgan=
+机构编号:10000000机构名称:集团
+, min_tree_id=443, login_form=com.krm.slsint.usermanage.web.form.LogForm@3e9f3364, dataDate1=201607, canEdit=1, logintime=2016-08-23 11:16:52, user=com.krm.slsint.usermanage.vo.User@19aea6e2[User=1], reportId=4106, inputOrganId=10000000, topStyle=standard, organId=10000000, loginUser=com.krm.slsint.usermanage.bo.LoginUserInfo@45e70a5a, javax.servlet.jsp.jstl.fmt.request.charset=utf-8, dataDate=2016-07-31, orgparam=&date=2016-07-31, logindate1=2016-07-31, org.apache.struts.action.LOCALE=zh_CN, inputDataDate=2016-07-31, logindate=2016-07-31, targetSize=2}
+
+
+<action path="/reportView"
+      type="com.krm.slsint.reportview.web.action.ReportViewAction" name="reportViewForm"
+      scope="request" input="search" parameter="method" unknown="false"
+      validate="false">
+      <forward name="search" path="/reportview/reportSearchForm.jsp"
+        redirect="false" />
+      <forward name="searchD04" path="/reportview/reportSearchFormD04.jsp"
+        redirect="false" />
+      <forward name="hkmaSearch" path="/totalpoints/reportHKMaSearchForm.jsp"
+        redirect="false" />
+      <forward name="search1" path="/superVersionLog/reportSearchForm.jsp"
+        redirect="false" />
+      <forward name="view1" path="/superAudit/reportFileView.jsp"
+        redirect="false" />
+      <forward name="viewByHz" path="/wgjFtpBaoSong/reportFileView.jsp"
+        redirect="false" />
+      <forward name="editTarget" path="/superAudit/buildForm.jsp"
+        redirect="false" />
+      <forward name="view" path="/reportview/reportFileView.jsp"
+        redirect="false" />
+      <forward name="reportXML" path="/reportview/reportXML.jsp"
+        redirect="false" />
+      <forward name="extraCondition" path="/loanRiskDeviation/inputExtraCondition.jsp"
+        redirect="false" />
+      <forward name="tree" path="/common/tree.jsp" redirect="false" />
+      <forward name="ajaxResponseText" path="/common/ajaxResponseText.jsp"
+        redirect="false" />
+      <forward name="datacarryerror" path="/databuild/datacarryerror.jsp"
+        redirect="false" />
+      <forward name="viewItemData" path="/reportview/viewItemData.jsp"
+        redirect="false" />
+      <forward name="preCheckSubmit" path="/reportview/preCheckSubmit.jsp"
+        redirect="false" />
+      <forward name="preCheckResult" path="/reportview/preCheckResult.jsp"
+        redirect="false" />
+      <forward name="paramSelect" path="/reportview/paramSearchForm.jsp"
+        redirect="false" />
+      <forward name="paramEdit" path="/reportview/paramSearchEdit.jsp"
+        redirect="false" />
+      <forward name="reverseQueryResult" path="/reportview/reverseQueryResult.jsp"
+        redirect="false" />
+      <forward name="reverseQueryResultDrill" path="/reportview/reverseQueryResultDrill.jsp"
+        redirect="false" />
+      <forward name="reverseQueryExcelexport" path="/reportview/reverseQueryExcelexport.jsp"
+        redirect="false" />
+      <forward name="viewItemTreeData" path="/reportview/viewItemTreeData.jsp"
+        redirect="false" />
+      <forward name="creatItemTreeExcel" path="/reportview/itemTreeDataExcelexport.jsp"
+        redirect="false" />
+      <forward name="showbirt" path="/birtSetup/showbirt.jsp"
+        redirect="false" />
+      <forward name="editTarget" path="/reportview/editOneData.jsp"
+        redirect="false" />
+      <forward name="addToItem" path="/reportview/toAddOneData.jsp"
+        redirect="false" />
+      <forward name="edit" path="/studentloan/studentloanEdit.jsp"
+        redirect="false" />
+      <forward name="editForBalan" path="/studentloan/studentloanEditForBalan.jsp"
+        redirect="false" />
+      <forward name="readonly" path="/studentloan/studentloanReadOnly.jsp"
+        redirect="false" />
+      <forward name="outline" path="/studentloan/submitOutline.jsp"
+        redirect="false" />
+      <forward name="deleteRep" path="/studentloan/deleteRepData.jsp"
+        redirect="false" />
+      <forward name="repDataReplay" path="/reportview/repDataReplay.jsp"
+        redirect="false" />
+      <forward name="showOneRepDate" path="/reportview/editOneData.jsp"
+        redirect="false" />
+      <forward name="replayAllData" path="/reportview/replayRepData.jsp"
+        redirect="false" />
+    </action>

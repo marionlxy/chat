@@ -1,0 +1,106 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+  <title>DataGrid inline editing - jQuery EasyUI Demo</title>
+  <link rel="stylesheet" type="text/css" href="../../themes/gray/easyui.css" />
+  <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
+  <link rel="stylesheet" type="text/css" href="../demo.css" />
+  <script type="text/javascript" src="../../jquery.min.js">
+</script>
+  <script type="text/javascript" src="../../jquery.easyui.min.js">
+</script>
+  <script type="text/javascript" src="../../locale/easyui-lang-zh_CN.js">
+//<![CDATA[
+  >
+  //]]>
+  </script>
+</head>
+
+<body>
+  <pre class="javascript" name="code">
+为了实现easyui datagrid行内编辑时的数据联动，找了很多方法，也找了不少人帮忙，最后总共用到了三种：
+</pre>
+  <pre class="javascript" name="code">
+1：取得那一行的数据，设置值，结束行编辑，开始行编辑；
+</pre>
+  <pre class="javascript" name="code">
+2：动态改变编辑器的类型，前后要结束行编辑，开始行编辑，结束行编辑，开始行编辑，效率最低;
+</pre>
+  <pre class="javascript" name="code">
+3:使用combobox编辑器，或隐藏，或使能（disabled),或editable,还有hasDownArrow属性
+</pre>
+  <pre class="javascript" name="code">
+ 
+</pre>
+  <pre class="javascript" name="code">
+onSelect : function(record) {
+                                                // var row = jQuery('#tt').datagrid('getRows');
+                                                // row[lastIndex].provinceId = record.leafbaseName;
+                                                // jQuery('#tt').datagrid('endEdit', lastIndex);
+                                                // jQuery('#tt').datagrid('beginEdit', currentRowIndex);
+                                                // jQuery('#tt').datagrid('endEdit', lastIndex);
+                                                // changeProvince = true;
+                                                // jQuery('#tt').datagrid('beginEdit', lastIndex);
+                                                var ed = jQuery('#tt').datagrid('getEditor', {
+                                                        index : lastIndex,
+                                                        field : 'provinceId'
+                                                }); // get the editor
+                                                jQuery(ed.target).combobox('setValue',
+                                                                record.leafbaseName + "abc");
+                                                // jQuery('#tt').datagrid('endEdit', lastIndex);
+                                                // changeProvince = false;
+                                                // jQuery('#tt').datagrid('beginEdit', lastIndex);
+                                                if (record.leafbaseName == '武汉') {
+                                                        jQuery(ed.target).combobox({
+                                                                disabled : false
+                                                        });
+                                                } else {
+
+                                                        jQuery(ed.target).combobox({
+                                                                disabled : true
+                                                        });
+                                                }
+                                                alert(jQuery(ed.target).combobox('getValue'));
+                                        }
+</pre>
+  <pre class="javascript" name="code">
+ 
+</pre>
+  <pre class="javascript" name="code">
+, {
+   field : 'provinceId',
+   title : '省份',
+   width : 120,
+   // hidden : true,
+   align : 'center',
+   editor : {
+    type : 'combobox',
+    options : {
+     // editable : false,
+     // disabled : true,
+     hasDownArrow : false
+    }
+   }
+  },
+</pre>
+  <pre class="javascript" name="code">
+ 
+</pre>
+  <pre class="javascript" name="code">
+  onBeforeEdit : function(row) {
+   // if (changeProvince) {
+   // var provinceColumn = jQuery('#tt').datagrid(
+   // 'getColumnOption', "provinceId");
+   // provinceColumn.editor = 'combobox';
+   // } else {
+   // var provinceColumn = jQuery('#tt').datagrid(
+   // 'getColumnOption', "provinceId");
+   // provinceColumn.editor = null;
+   // }
+  }
+</pre>
+
+  <p><br /></p>来不及整理，先把这些片段记录下来，上面将三种方法给混在一起了
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Row Editing in DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="../../themes/metro/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../../themes/icon.css"> 
+	<link rel="stylesheet" type="text/css" href="../demo.css">
+	<script type="text/javascript" src="../../jquery.min.js"></script>
+	<script type="text/javascript" src="../../jquery.easyui.min.js"></script>
+</head>
+<body>
+	
+	<div style="margin:20px 0;"></div>
+	
+	<div class="easyui-panel" title="" style="width:900px">
+		<div style="padding:10px 60px 20px 60px">
+	    <form id="ff" method="post">
+	    	<table cellpadding="5">
+	    		<tr>
+	    			<td>申请机构:</td>
+	    			<td><input class="easyui-textbox" type="text" name="sqorg" data-options=""></input></td>
+	    			<td>申请日期:</td>
+	    			<td><input class="easyui-textbox" type="text" name="sqdate" data-options=""></input></td>
+	    			<td>申请种类:</td>
+	    			<td><input class="easyui-textbox" type="text" name="sqtype" data-options=""></input></td>
+	    			<td><input type="button" name="add" data-options="" onclick="" value="查询"></td>    			
+	    		</tr>
+	    	</table>
+	    </form>
+	   
+	    </div>
+	</div>
+<!-- datagrid_data1.json -->
+	<table id="dg" class="easyui-datagrid" title="" style="width:900px;height:auto"
+			data-options="
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				toolbar: '#tb',
+				url: 'datagrid_data3.json',
+				method: 'get'
+			">
+		<thead>
+			
+			<tr>
+				<th data-options="field:'itemid',width:80,editor:'textbox'">序号</th>
+				<th data-options="field:'itemname',width:120,editor:'textbox'">申请单名称</th>
+				<th data-options="field:'itemdate',width:120,editor:'textbox'">申请日期</th>
+				<th data-options="field:'productid',width:120,
+						formatter:function(value,row){
+							return row.producttype;
+						},
+						editor:{
+							type:'combobox',
+							options:{
+								valueField:'productid',
+								textField:'producttype',
+								method:'get',
+								url:'products2.json',
+								required:true
+							}
+						}">申请单种类</th>
+				<!-- <th data-options="field:'listprice',width:80,align:'right',editor:{type:'numberbox',options:{precision:1}}">价格</th> -->
+			<!-- 	<th data-options="field:'unitcost',width:80,align:'right',editor:'numberbox'">总共费用</th> -->
+				<th data-options="field:'orgid',width:80,editor:'textbox'">申请机构代码</th>
+				<th data-options="field:'attr1',width:250,editor:'textbox'">说明</th>
+			
+				<th data-options="field:'operate',width:250,align:'center'">操作</th>
+				
+			</tr>
+		</thead>
+			
+			</table>
+			<div id="tb2" style="height:auto">
+				<input name="accept" type='button'  data-options="" onclick="accept2()" value="保存并校验" />
+			</div>
+			<!-- <div style="width:400px"></div> -->
+			<div id="tb" style="height:auto;align:right;">
+			<input type="button" name="add" data-options="" onclick="append()" value="增加"/>
+			<input type="button" name="edit" data-options="" onclick="" value="编辑" />
+			</div>
+	
+	<script type="text/javascript">
+		var editIndex = undefined;
+		function endEditing(){
+			//编辑索引
+			if (editIndex == undefined){
+				return true
+			}
+
+			if ($('#dg').datagrid('validateRow', editIndex)){
+
+				var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'productid'});
+				var producttype = $(ed.target).combobox('getText');
+				$('#dg').datagrid('getRows')[editIndex]['producttype'] = producttype;
+				$('#dg').datagrid('endEdit', editIndex);
+				editIndex = undefined;
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		function onClickRow(index){
+			var selected = $('#dg').datagrid('getSelected');//返回第一个被选中的行
+			var index=$('#dg').datagrid('getRowIndex', $("#dg").datagrid('getSelected'));
+			if (editIndex != index){
+				if (endEditing()){
+					$('#dg').datagrid('selectRow', index)
+							.datagrid('beginEdit', index);
+					editIndex = index;
+				} else {
+					$('#dg').datagrid('selectRow', editIndex);
+				}
+			}
+		}
+		function append(){
+			if (endEditing()){
+				//$('#dg').datagrid('appendRow',{status:'P'});
+				$('#dg').datagrid('appendRow',{operate:"<a href='' style='text-decoration:none;'>保存</a><a href='#' onclick='onClickRow()' style='text-decoration:none;'>&nbsp;&nbsp;&nbsp;&nbsp;编辑</a><a href='' style='text-decoration:none;'>&nbsp;&nbsp;&nbsp;&nbsp;删除 </a>"});
+				editIndex = $('#dg').datagrid('getRows').length-1;
+				$('#dg').datagrid('selectRow', editIndex)
+						.datagrid('beginEdit', editIndex);
+			}
+		}
+		function removeit(){
+			if (editIndex == undefined){return}
+			$('#dg').datagrid('cancelEdit', editIndex)
+					.datagrid('deleteRow', editIndex);
+			editIndex = undefined;
+		}
+
+		function accept2(){
+			if (endEditing()){
+				$('#dg').datagrid('acceptChanges');
+			}
+		}
+		function accept(){
+			if (endEditing()){
+				$('#dg').datagrid('acceptChanges');
+			}
+		}
+		function reject(){
+			$('#dg').datagrid('rejectChanges');
+			editIndex = undefined;
+		}
+		function getChanges(){
+			var rows = $('#dg').datagrid('getChanges');
+			alert(rows.length+' rows are changed!');
+		}
+	</script>
+</body>
+</html>

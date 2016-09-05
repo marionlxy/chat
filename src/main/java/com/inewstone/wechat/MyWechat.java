@@ -44,7 +44,7 @@ public class MyWechat extends WechatSupport {
 			
 //			responseNew(title, description, picUrl, url);
 //			
-//			ArticleResponse item = new ArticleResponse();
+			ArticleResponse item = new ArticleResponse();
 //			item.setTitle(title);
 //			item.setDescription(description);
 //			item.setUrl(url);
@@ -195,7 +195,6 @@ public class MyWechat extends WechatSupport {
 		String FromUserName = wechatRequest.getFromUserName();
 		//用户未关注时扫描二维码事件,会多一个EventKey和Ticket节点
 		String Ticket = wechatRequest.getTicket();
-
 		String result = "订阅事件FromUserName:" + FromUserName;
 		if(StringUtils.isNotBlank(Ticket)){
 			result = "扫描带场景值二维码事件FromUserName:" + FromUserName + ", Ticket:" + Ticket;
@@ -332,6 +331,36 @@ public class MyWechat extends WechatSupport {
 		String result = "扫码推事件ScanType:" + ScanType + ", ScanResult:" + ScanResult;
 		logger.info(result);
 		responseText(result);
+	}
+
+	@Override
+	protected void kfCloseSession() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void kfCreateSession() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void kfSwitchSession() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onShortVideo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void orderPaid() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

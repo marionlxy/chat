@@ -5,6 +5,11 @@ import org.sword.wechat4j.token.server.CustomerServer;
 
 public class JsApiTicketCustomerServer extends CustomerServer{
 
+	public JsApiTicketCustomerServer() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public String find() {
 		String jsApiTicket = null;
 		//执行数据库操作

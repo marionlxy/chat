@@ -1,0 +1,9 @@
+[
+{"productid":"FI-SW-01","producttype":"1.产品基本信息"},
+{"productid":"K9-DL-01","producttype":"2.产品终止信息"},
+{"productid":"RP-SN-01","producttype":"3.资金池基本信息"},
+{"productid":"RP-LI-02","producttype":"4.资金池终止信息"},
+{"productid":"FL-DSH-01","producttype":"5.产品起始募集信息"},
+{"productid":"FL-DLH-02","producttype":"6.产品资金募集信息"},
+{"productid":"AV-CB-01","producttype":"7.资产负债信息"}
+]
